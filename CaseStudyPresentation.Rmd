@@ -1,0 +1,115 @@
+---
+title: "BeersAndBreweries"
+author: "Ramya Mandava"
+date: "July 2, 2017"
+output:
+  html_document:
+    keep_md: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Introduction
+When drinking beer, there are many factors to be considered. Principal among them are bitterness, the variety of flavours present in the beverage, along with their intensity, alcohol content, and colour. Standards for those characteristics allow a more objective and uniform determination to be made on the overall qualities of any beer.(Reference to: https://en.wikipedia.org/wiki/Beer_measurement).  
+The purpose of this document is to analyze and find correlations if any, by carefully examining each description of the Beers dataset containing a list of 2410 US craft beers and Breweries dataset containing 558 US
+breweries.  
+
+The datasets descriptions are as follows:
+
+###Beers.csv:
+* Name: Name of the beer.
+* Beer ID: Unique identifier of the beer.
+* ABV: Alcohol by volume of the beer.
+* IBU: International Bitterness Units of the beer.
+* Brewery ID: Brewery id associated with the beer.
+*  Style: Style of the beer.
+*Ounces: Ounces of beer.
+
+###Breweries.csv:
+* Brew ID: Unique identifier of the brewery.
+* Name: Name of the brewery.
+* City: City where the brewery is located.
+* State: State where the brewery is located.
+
+```{r}
+
+#Setup
+
+#Loading libraries
+library(repmis)
+library(dplyr)
+library(ggplot2)
+
+#Set working Directory
+setwd("C:/Users/aura7/Documents/SMU/Courses/Summer1/DoingDS_MSDS6306/Week7/CaseStudy_01/SMUCaseStudy01")
+
+#Gather Beer and Breweries Datfiles
+source("Analysis/Data/GatherBeerData.R")
+source("Analysis/Data/GatherBreweriesData.R")
+```
+
+#Analysis
+Examining the Breweries dataset, it has been found that, Colorado state has the most number of Breweries(47), followed by California(39) and Michigan(32). More than 50% of the US states have less than 10 breweries.
+
+```{r}
+# Counts the number of Breweries present in each State and prints the data frame
+source("Analysis/Data/BreweriesCount01.R")
+print(tbl_df(BrewerieCount), n=51)
+```
+
+###Merging
+Beers and Breweries data has been cleaned and merged for further analysis. First and last 6 rows of the merged data are being printed as shown below to make sure merging is done well.Merged data is then copied to a Data folder incase of future need.
+
+```{r}
+source("Analysis/Data/MergingBeer_Breweries.R")
+head(MergedData1)
+tail(MergedData1)
+```
+
+###Checking for NA's
+Looking for NA items and Blank spaces is extremely important in data analysis as it might lead to innacurate results. Close examination of the merged dataset showed that there are 62 entries of NA for ABV(Variable describing Alcohol content in Beer), 1005 entries of NA for IBU(Internationally recognized bitterness units of beer) and 5 blank entries for Style.
+
+```{r}
+source("Analysis/ReportingNAs.R")
+na_count
+```
+
+
+###Median Alcohol Content and Median Bitterness units by State
+The below graph on median alcohol content in Beers by state shows that, majority of the states are brewing beers with a median alcoholic content > 5%, which falls under the higher limit of alcoholic percentage for beers (Reference to: https://en.wikipedia.org/wiki/Unit_of_alcohol). Washington DC, Kentucky, Michigan, New Mexico and West Virginia states have beers with ABV exceeding 6%.
+
+```{r}
+source("Analysis/BarPlot.R", echo = TRUE)
+
+```
+
+The International Bittering Units scale, or simply IBU scale, is used to approximately quantify the bitterness of beer. The European Bitterness Units scale, often abbreviated as EBU, is a bitterness scale[20] in which lower values are generally "less bitter" and higher values "more bitter". The scale and method are defined by the European Brewery Convention, and the numerical value should be the same as of the International Bittering Units scale (IBU), defined in co-operation with the American Society of Brewing Chemists.(Reference to: https://en.wikipedia.org/wiki/Beer_measurement).  
+The above graph on median IBU(Bitterness units) of beers by state shows that, Maine and West Virginia sates are making the most bitter beer based on median valuee, followed by Denver, Gerogia and Florida with median IBU > 50.  
+> West Virginia state, seems to be common between higher ABV and higher IBU data. Which leads to the question if there is a relationship between alcohol levels and bitterness of beer.
+
+###States with Max IBU and Max ABV
+Running analysis on the merged data, it has been noticed that the state with most bitter beer is Oregon, while the state with maximum alcoholic beer is Colorado. However, this does not provide much information on the relationship between ABV and IBU
+
+```{r}
+source("Analysis/MaxIBU_ABV.R", echo = TRUE)
+
+```
+
+###Summary stats for ABV(Alcohol content)
+Running summary statistics for ABV showed that more than 50% of the beers have alcoholic content greater than 5.5% which is the higher limit of alcoholic percentage for beers(Reference to:https://en.wikipedia.org/wiki/Unit_of_alcohol).
+```{r}
+source("Analysis/SummaryABV.R", echo = TRUE)
+
+```
+
+###Scatterplot ABV vs IBU
+
+```{r}
+source("Analysis/ScatterPlotABV_IBU.R", echo = TRUE)
+
+```
+
+#Conclusion
+Looking at the scattered plot on Alcohol content vs Bitterness of the beer, there seems to be a strong positive correlation between the two. Bitterness of the beer is increased with increase in alcohol content. Especially beers with Alcoholic content crossing 0.06 has a big increase in bitterness.
